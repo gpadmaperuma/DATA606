@@ -1,0 +1,118 @@
+---
+title: "Chapter 1 - Introduction to Data"
+author: 'Don Padmaperuma'
+output:
+  html_document:
+    df_print: paged
+  pdf_document:
+    extra_dependencies:
+    - geometry
+    - multicol
+    - multirow
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+**Smoking habits of UK residents**. (1.10, p. 20) A survey was conducted to study the smoking habits of UK residents. Below is a data matrix displaying a portion of the data collected in this survey. Note that “£” stands for British Pounds Sterling, "cig" stands for cigarettes, and "N/A" refers to a missing component of the data.
+
+```{r}
+library(openintro)
+```
+```{r}
+data(smoking)
+summary(smoking)
+```
+```{r}
+## creating a subset out of the original matix
+SmokingHabitsUK = subset(smoking, 
+                         select = c(gender,age,maritalStatus,grossIncome,smoke,amtWeekends,amtWeekdays))
+names(SmokingHabitsUK)[1]="sex"
+names(SmokingHabitsUK)[3]="marital"
+str(SmokingHabitsUK)
+```
+```{r}
+head(SmokingHabitsUK)
+```
+  
+### (a) What does each row of the data matrix represent?  
+Each row of the data matrix represents its case or Observational unit. In this case it represent information on an individual UK resident smoking habit.  
+
+```{r}
+nrow(smoking)
+```
+
+### (b) How many participants were included in the survey?  
+There were 1691 participants included in the survey 
+
+### (c) Indicate whether each variable in the study is numerical or categorical. If numerical, identify as continuous or discrete. If categorical, indicate if the variable is ordinal.  
+In this study, there are both numerical and categorical variables.   
+Numerical  
+-> Continous :  age  
+-> discrete: amtWeekends, amtWeekdays  
+Categorical  
+-> Nominal: sex, marital, smoke  
+-> ordinal : grossIncome  
+
+
+**Cheaters, scope of inference**. (1.14, p. 29) Exercise 1.5 introduces a study where researchers studying the relationship between honesty, age, and self-control conducted an experiment on 160 children between the ages of 5 and 15. The researchers asked each child to toss a fair coin in private and to record the outcome (white or black) on a paper sheet, and said they would only reward children who report white. Half the students were explicitly told not to cheat and the others were not given any explicit instructions. Differences were observed in the cheating rates in the instruction and no instruction groups, as well as some differences across children’s characteristics within each group.    
+
+### (a) Identify the population of interest and the sample in this study.    
+
+The population of interest of this study are 160 children between the ages of 5 and 15.  
+The sample in this study were the children who attended a summer camp in italy in the two days that the experiment was conducted. 
+
+
+### (b) Comment on whether or not the results of the study can be generalized to the population, and if the findings of the study can be used to establish causal relationships.  
+
+The results of this study cannot be generalized to the population as this sample of the study does not represent all the children in that age group. Also in the experiment they rewarded students who only reported white and this can affect on children's dicition making.Children were not informed about the nature of the experiment.Experiment was given to them as part of their camp activity. These reasons can also contribute to a biased experiment. 
+Yes it is possible to establish a casual relationship as this is an experiment and the results were different when half of the children were told not to cheat expricitly.
+
+ref: Alessandro Bucciol and Marco Piovesan. “Luck or cheating? A field experiment on honesty with children”. In:Journal of Economic Psychology  
+
+**Reading the paper**. (1.28, p. 31) Below are excerpts from two articles published in the NY Times:
+
+### (a) An article titled Risks: Smokers Found More Prone to Dementia states the following:
+
+"Researchers analyzed data from 23,123 health plan members who participated in a voluntary exam and health behavior survey from 1978 to 1985, when they were 50-60 years old. 23 years later, about 25% of the group had dementia, including 1,136 with Alzheimer's disease and 416 with vascular dementia. After adjusting for other factors, the researchers concluded that pack-a- day smokers were 37% more likely than nonsmokers to develop dementia, and the risks went up with increased smoking; 44% for one to two packs a day; and twice the risk for more than two packs."  
+
+### Based on this study, can we conclude that smoking causes dementia later in life? Explain your reasoning.  
+Data analyzed were from a survey rather than from an experiment that involves control groups. It is difficult to conclude that smoking cause dementia later in life just based on those outcomes from the survey. Not just Dementia, participants ended up with Alzheimer's disease as well. And also we have no information on what are the other factors that were adjusted to come to an conclution too.  
+
+### (b) Another article titled The School Bully Is Sleepy states the following:
+
+"The University of Michigan study, collected survey data from parents on each child's sleep habits and asked both parents and teachers to assess behavioral concerns. About a third of the students studied were identified by parents or teachers as having problems with disruptive behavior or bullying. The researchers found that children who had behavioral issues and those who were identified as bullies were twice as likely to have shown symptoms of sleep disorders."
+
+### A friend of yours who read the article says, "The study shows that sleep disorders lead to bullying in school children." Is this statement justified? If not, how best can you describe the conclusion that can be drawn from this study?  
+
+Above study does not prove that sleep disorders lead to bullying in school children. It is the other way around. Data collected from the survey shows that the children with behavioral issues and those who were identified as bullies like to have symptoms of sleep disorders.  
+
+**Exercise and mental health.** (1.34, p. 35) A researcher is interested in the effects of exercise on mental health and he proposes the following study: Use stratified random sampling to ensure rep- resentative proportions of 18-30, 31-40 and 41-55 year olds from the population. Next, randomly assign half the subjects from each age group to exercise twice a week, and instruct the rest not to exercise. Conduct a mental health exam at the beginning and at the end of the study, and compare the results.  
+
+### (a) What type of study is this? 
+
+Based on the information, this is an experiment type study that involves control group with treatment(exercise) 
+
+### (b) What are the treatment and control groups in this study? 
+
+Treatment Group -> randomly picked half of 18-30, 31-40 and 41-55 year olds from the sample population. (exercise twise a week)
+Control Group -> rest of 18-30, 31-40 and 41-55 year olds from the sample population. (No exercise)  
+
+### (c) Does this study make use of blocking? If so, what is the blocking variable?
+This study users age groups such as 18-30, 31-40 and 41-55. This is a way of blocking using age as its blocking variable.  
+
+### (d) Does this study make use of blinding?
+
+This study does not use blinding. All the individuals are instructed to do or not to do exercises and have done mental evaluations begining and end of the study. It does not mention in the study too. 
+
+### (e) Comment on whether or not the results of the study can be used to establish a causal rela- tionship between exercise and mental health, and indicate whether or not the conclusions can be generalized to the population at large. 
+
+This is an experiment study that can be used to establish a casual relationship between exercise and mental health. If the sample size is big enough, the conclution can be generalized to the population at large.  
+
+### (f) Suppose you are given the task of determining if this proposed study should get funding. Would you have any reservations about the study proposal? 
+I would have some reservations. As the control group is informed not to exercise at all, that may lead to decrease in physical health with their mental health. Eventhough the reasearch target is to mesure the mental health, experiment might do some serious damage to individuals overall health. 
+
+
+
+
+

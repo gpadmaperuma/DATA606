@@ -1,0 +1,134 @@
+---
+title: "DATA606_CH2_HW"
+author: "Don Padmaperuma (Geeth)"
+date: "9/4/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Chapter 2 - Summarizing Data  
+
+### Stats Scores
+
+#### Below are the final exam scores of twenty introductory statistics students.  
+
+#### 57, 66, 69, 71, 72, 73, 74, 77, 78, 78, 79, 79, 81, 81, 82, 83, 83, 88, 89, 94
+
+```{r}
+stat_scores <- c(57, 66, 69, 71, 72, 73, 74, 77, 78, 78, 79, 79, 81, 81, 82, 83, 83, 88, 89, 94)
+summary(stat_scores)
+```
+
+#### Create a box plot of the distribution of these scores.
+
+```{r}
+boxplot(stat_scores)
+```
+
+### Mix-and-match  
+
+#### Describe the distribution in the histograms below and match them to the box plots.
+```{r}
+library(openintro)
+set.seed(7365)
+sym = rnorm(1000, mean = 60, sd = 3)
+uni = runif(1000, min = 0, max = 100)
+rs = rgamma(1000, shape = 3, rate = 2)
+par(mar=c(4, 3.6, 0, 0), las = 1, mgp = c(2.7, 0.7, 0), 
+    mfrow = c(1,6), 
+    cex.lab = 1.5, cex.axis = 1.5)
+histPlot(sym, xlab = "(a)", ylab = "", col = COL[1], axes = FALSE)
+axis(1, seq(50,70,10))
+histPlot(uni, xlab = "(b)", ylab = "", col = COL[1], axes = FALSE)
+axis(1, seq(0,100,50))
+histPlot(rs, xlab = "(c)", ylab = "", col = COL[1], axes = FALSE)
+axis(1, seq(0,6,2))
+boxPlot(rs, xlab = "(1)", ylab = "", col = COL[1,3])
+boxPlot(sym, xlab = "(2)", ylab = "", col = COL[1,3])
+boxPlot(uni, xlab = "(3)", ylab = "", col = COL[1,3])
+```
+
+#### histogram (a): This has a symmetric unimodal distribution as it shows roughly equal trailing off in both directions with one clear peak. This matches with box plot (2)
+
+#### histogram (b): This histogram has a uniform symmetric distribution. It matches with box plot (3)
+
+#### histogram (c): This has a Right skewed distribution and it matches with box plot (1)
+
+### Distributions and appropriate statistics, Part II
+
+#### For each of the following, state whether you expect the distribution to be symmetric, right skewed, or left skewed. Also specify whether the mean or median would best represent a typical observation in the data, and whether the variability of observations would be best represented using the standard deviation or IQR. Explain your reasoning.
+
+#### **(a) Housing prices in a country where 25% of the houses cost below $350,000, 50% of the houses cost below $450,000, 75% of the houses cost below $1,000,000 and there are a meaningful number of houses that cost more than $6,000,000.**
+
+#### this represent a left skewed distribution. The mean would best represent the observation where as IQR will best represent variability of observation due to the number of houses over $6,000,000.
+
+#### **(b) Housing prices in a country where 25% of the houses cost below $300,000, 50% of the houses cost below $600,000, 75% of the houses cost below $900,000 and very few houses that cost more than $1,200,000.**
+
+#### Its more likely a symmetric distribution as all the house costs are evenly scalled. This also because there is only few overly expensive houses or overly less expensive which eliminates the graph being too skewed for any direction. Its better to get the median and IQR to represent the variability of observation.
+
+#### **(c) Number of alcoholic drinks consumed by college students in a given week. Assume that most of these students don’t drink since they are under 21 years old, and only a few drink excessively.**
+
+#### This could be a right skewed distribution. As mentioned in the statement, there's only few excessive drinkers. Median and SD could be good to represent variability.
+
+#### **(d) Annual salaries of the employees at a Fortune 500 company where only a few high level executives earn much higher salaries than the all other employees.**
+
+#### The data will be off in one direction as few high level executives earn much higher salaries. Most probably a right skewed. Median and IQR will best represent the variablity.
+
+### Heart transplants
+
+#### The Stanford University Heart Transplant Study was conducted to determine whether an experimental heart transplant program increased lifespan. Each patient entering the program was designated an official heart transplant candidate, meaning that he was gravely ill and would most likely benefit from a new heart. Some patients got a transplant and some did not. The variable transplant indicates which group the patients were in; patients in the treatment group got a transplant and those in the control group did not. Of the 34 patients in the control group, 30 died. Of the 69 people in the treatment group, 45 died. Another variable called survived was used to indicate whether or not the patient was alive at the end of the study.  
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.show="hold", out.width="50%", fig.height=3}
+library(openintro)
+data(heartTr)
+# mosaic plot -------------------------------------------------------
+par(mar = c(0, 0, 0, 0), las = 1, mgp = c(2.7, 0.9, 0))
+mosaicplot(transplant ~ survived, data = heartTr, 
+           main = "", xlab = "", ylab = "", color = COL[1],
+           cex.axis = 1.5)
+# box plot ----------------------------------------------------------
+par(mar = c(2, 4.8, 0, 0), las = 1, mgp = c(3.5, 0.7, 0), 
+    cex.lab = 1.5, cex.axis = 1.5)
+```
+
+#### **(a) Based on the mosaic plot, is survival independent of whether or not the patient got a transplant? Explain your reasoning.**  
+
+#### According to the mosaic plot survival is not independent. It is dependant based on if the patient recieved a transplant or not. Plot clear shows with a bigger tile area for the "alive" of the treatment group compared to the "alive" of the control group.
+
+#### **(b) What do the box plots below suggest about the efficacy (effectiveness) of the heart transplant treatment.**  
+
+```{r}
+boxPlot(heartTr$survtime, fact = heartTr$transplant, 
+        ylab = "Survival Time (days)", col = COL[1,2])
+
+```
+
+#### According to the box plot median survival time for the treatment group is higher compared to the control group. IQR shown by the total length of the box for control is shorter than the treatment group. This shows the variability for treatment is more than the control group. From the box plot we can conclude that treatments were effective in heart transplant.
+
+
+#### **(c) What proportion of patients in the treatment group and what proportion of patients in the control group died?** 
+
+```{r}
+# Proportion of the patients in the treatment group died
+Prop_treatment <- (45/69)
+Prop_treatment
+round(Prop_treatment*100, 0)
+```
+```{r}
+# Proportion of the patients in the control group died
+Prop_control <- (30/34)
+Prop_control
+round(Prop_control*100, 0)
+```
+
+#### 65% of the patients in the treatment group died and 88% of the control group died.
+
+#### **(d) One approach for investigating whether or not the treatment is effective is to use a randomization technique.**  
+
+##### i. What are the claims being tested?
+
+
+
+ 
