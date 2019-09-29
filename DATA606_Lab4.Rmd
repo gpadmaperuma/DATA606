@@ -1,0 +1,218 @@
+---
+title: "DATA606_Lab4"
+author: "Don Padmaperuma"
+date: "9/28/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+### The Data  
+
+#### This week we’ll be working with measurements of body dimensions. This data set contains measurements from 247 men and 260 women, most of whom were considered healthy young adults.  
+
+```{r}
+body_dim <- read.csv("bdims.csv")
+head(body_dim)
+```
+#### Since males and females tend to have different body dimensions, it will be useful to create two additional data sets: one with only men and another with only women.  
+
+```{r}
+male_dims <- subset(body_dim, sex == 1)
+female_dims <- subset(body_dim, sex == 0)
+```
+
+> Exercise 1: Make a histogram of men’s heights and a histogram of women’s heights. How would you compare the various aspects of the two distributions?
+
+```{r}
+#men's heights
+hist(male_dims$hgt,
+     breaks = 10,
+     xlab = "Height",
+     main = "Histogram of Men's heights",
+     col = "blue",
+     probability = TRUE)
+x <- male_dims$hgt
+xfit <- seq(min(x)-5, max(x)+5, length = 200)
+yfit <- dnorm(xfit, mean(x), sd(x))
+lines(xfit, yfit, col = "red", lwd = 2)
+```
+```{r}
+#summary of men's heights
+summary(male_dims$hgt)
+```
+
+```{r}
+#women's heights
+hist(female_dims$hgt,
+     breaks = 10,
+     xlab = "Height",
+     main = "Histogram of women's heights",
+     col = "pink",
+     probability = TRUE)
+x <- female_dims$hgt
+xfit <- seq(min(x)-5, max(x)+5, length = 200)
+yfit <- dnorm(xfit, mean(x), sd(x))
+lines(xfit, yfit, col = "blue", lwd = 2)
+
+```
+```{r}
+#summary of women's heights
+summary(female_dims$hgt)
+```
+#### Both histograms clearly shows its normal distribution. male mean heght is bit higher compared to female mean height. 
+
+### The normal distribution  
+```{r}
+hist(female_dims$hgt, probability=TRUE, ylim=c(0,0.1), main = "Histogram of female heights", xlab = "Female Hights")
+x <- female_dims$hgt
+xfit <- seq(min(x)-5, max(x)+5, length = 200)
+yfit <- dnorm(xfit, mean(x), sd(x))
+lines(xfit, yfit, col = "blue", lwd = 2)
+abline(v = mean(x), col = "red")
+```
+
+> Exercise 2: Based on the this plot, does it appear that the data follow a nearly normal distribution?  
+
+#### Althogh the curve does not fit the histogram exactly, they are symmetric and have nearly close mean points.THis data does follow nearly normal distribution.
+
+### Evaluating the normal distribution  
+
+```{r}
+qqnorm(female_dims$hgt)
+qqline(female_dims$hgt)
+```
+
+```{r}
+sim_norm <- rnorm(n = length(female_dims$hgt), mean = mean(female_dims$hgt), sd = sd(female_dims$hgt))
+sim_norm
+```
+
+> Exercise 3: Make a normal probability plot of sim_norm. Do all of the points fall on the line? How does this plot compare to the probability plot for the real data?  
+
+```{r}
+qqnorm(sim_norm)
+qqline(sim_norm)
+```
+
+#### All the points of **sim_norm** data fall very close to the theoretical line, except for the few at end of each tails. Also in real data has the similar characteristics except at the end points directions are opposite compared to the one for simulated data. 
+
+> Does the normal probability plot for female_dims$hgt look similar to the plots created for the simulated data? That is, do plots provide evidence that the female heights are nearly normal?  
+
+
+```{r}
+library(StMoSim)
+qqnormSim(female_dims$hgt)
+```
+
+#### It is very similar to the simulated data. We can conclude that female heights are nearly normal. 
+
+> Exercise 5: Using the same technique, determine whether or not female weights appear to come from a normal distribution.
+
+```{r}
+#NOrmal plot for real data
+qqnorm(female_dims$wgt)
+qqline(female_dims$wgt)
+```
+
+```{r}
+#simulated data plot for femal weights
+qqnormSim(female_dims$wgt)
+```
+
+#### based on the plots where two fat tails skewed more to the left with more curvier look. This shows that female weight data may not be nearly normal.
+
+### Normal probabilities
+
+```{r}
+1 - pnorm(q = 182, mean = mean(female_dims$hgt), sd = sd(female_dims$hgt))
+```
+```{r}
+# Since we’re interested in the probability that someone is taller than 182 cm, we have to take one minus that probability.
+sum(female_dims$hgt >182)/length(female_dims$hgt)
+```
+#### Although the probabilities are not exactly the same, they are reasonably close. The closer that your distribution is to being normal, the more accurate the theoretical probabilities will be.  
+
+> Exercise 6: Write out two probability questions that you would like to answer; one regarding female heights and one regarding female weights. Calculate the those probabilities using both the theoretical normal distribution as well as the empirical distribution (four probabilities in all). Which variable, height or weight, had a closer agreement between the two methods?  
+
+#### **“What is the probability that a randomly chosen young adult female is shorter than 165 cm?”**
+```{r}
+pnorm(q = 165, mean = mean(female_dims$hgt), sd = sd(female_dims$hgt))
+```
+```{r}
+sum(female_dims$hgt<165)/length(female_dims$hgt)
+```
+#### both answers are very close, which is over 50%
+
+#### **“What is the probability that a randomly chosen young adult female is taller than 175 cm?”**
+```{r}
+1-pnorm(q = 175, mean = mean(female_dims$hgt), sd = sd(female_dims$hgt))
+```
+```{r}
+sum(female_dims$hgt>175)/length(female_dims$hgt)
+```
+#### Again very close answers in regards to femal hights.
+
+#### **“What is the probability that a randomly chosen young adult female is weigh more than 50kg?”**
+```{r}
+1-pnorm(q = 50, mean = mean(female_dims$wgt), sd = sd(female_dims$wgt))
+```
+```{r}
+sum(female_dims$wgt>50)/length(female_dims$wgt)
+```
+#### very close answers in probability of female weights over 50kg.
+
+#### **“What is the probability that a randomly chosen young adult female is weigh less than 75kg?”**  
+```{r}
+pnorm(q = 75, mean = mean(female_dims$wgt), sd = sd(female_dims$wgt))
+```
+```{r}
+sum(female_dims$wgt<75)/length(female_dims$wgt)
+```
+#### Similar answers once again in regards to probability of female weights over 75kg.
+
+### On Your Own
+#### 1. Now let’s consider some of the other variables in the body dimensions data set. Using the figures at the end of the exercises, match the histogram to its normal probability plot. All of the variables have been standardized (first subtract the mean, then divide by the standard deviation), so the units won’t be of any help. If you are uncertain based on these figures, generate the plots in R to check.
+> a. The histogram for female biiliac (pelvic) diameter (bii.di) belongs to normal probability plot letter **B**.    
+
+> b. The histogram for female elbow diameter (elb.di) belongs to normal probability plot letter **C**.
+
+> c. The histogram for general age (age) belongs to normal probability plot letter **D**.
+
+> d. The histogram for female chest depth (che.de) belongs to normal probability plot letter **A**.
+
+#### 2. Note that normal probability plots C and D have a slight stepwise pattern. Why do you think this is the case? 
+#### stepwise probalility plot patterns are usually produced by discrete variables such as age whereas continous patterns (such as a normal curve) are produced by continuous variables.  
+
+```{r}
+# Plot for (bii.di)
+qqnorm(female_dims$bii_di)
+qqline(female_dims$bii_di)
+```
+```{r}
+# Plot for (elb.di)
+qqnorm(female_dims$elb_di)
+qqline(female_dims$elb_di)
+```
+```{r}
+# Plot for (age)
+qqnorm(female_dims$age)
+qqline(female_dims$age)
+```
+```{r}
+# Plot for (che.de)
+qqnorm(female_dims$che_de)
+qqline(female_dims$che_de)
+```
+#### 3. As you can see, normal probability plots can be used both to assess normality and visualize skewness. Make a normal probability plot for female knee diameter (kne.di). Based on this normal probability plot, is this variable left skewed, symmetric, or right skewed? Use a histogram to confirm your findings.
+```{r}
+qqnorm(female_dims$kne_di)
+qqline(female_dims$kne_di)
+```
+#### Based on the probability plot data appeared to be right skewed.   
+```{r}
+hist(female_dims$kne_di, main = "Histogram of female Knee Diameter", xlab = "Female Knee Diameter")
+```
+
+#### Histogram shows how the data are skewed to the right.  
