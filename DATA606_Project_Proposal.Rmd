@@ -1,0 +1,144 @@
+---
+title: "Project_Proposal"
+author: "Don Padmaperuma (Geeth)"
+date: "10/17/2019"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Data Preparation
+
+```{r}
+library(tidyverse)
+library(kableExtra)
+library(dplyr)
+library(psych)
+```
+
+```{r}
+# Reading the original .csv file that downloaded from http://data.un.org/
+
+original_file <- read.csv("https://raw.githubusercontent.com/gpadmaperuma/DATA606/master/SYB62_T03_201907_Population%20Growth%2C%20Fertility%20and%20Mortality%20Indicators.csv", header = TRUE, skip = 1)
+head(original_file) %>% kable()
+```
+
+```{r}
+dim(original_file)
+```
+
+
+### Research question 
+
+**While analysing these data I will try to find solutions to my two questions:**  
+**(1) Which country/region/area has the highest Life Expectancy?**  
+**(2) Is there a increase/decrease in Life Expectancy in these country/region/area?**  
+
+### Cases 
+
+**There are 4984 Cases in this dataset. Each case represent population growth and indicators of fertility and mortality of the world**
+
+### Data collection 
+
+**These data was obtained from the United Nations Database called [UNdata:A world of information](http://data.un.org/).**  
+**UNdata is a web-based data service for the global user community. These data are maintained by the Statistical Division of the Department of Economics and Social Affairs (UN DESA) of UN Secretariat. Most of the data sourced by UN partner organization such as UNICEF, UNDP, UNHCR, WHO etc.**  
+
+### Type of study 
+
+**These data are obtained as a part of UN research efforts inorder to solve world economic, health and other problems.These are observational data collected in UN researches of those countries or regions.**
+
+### Data Source 
+
+**[UNdata: A world of information](http://data.un.org/)**
+
+The United Nations, [*Population Growth Fertility Mortality Indicators (2019)*](http://data.un.org/_Docs/SYB/PDFs/SYB62_T03_201907_Population%20Growth,%20Fertility%20and%20Mortality%20Indicators.pdf). Retrieved from (http://data.un.org/)
+
+
+### Dependent Variable
+
+**The responce variable for this dataset is *value* which is a quantitative variable.It holds all the population, fertility and mortality rates.**
+
+### Independent Variable
+
+**Two Qualitative independent variables are the *Region/Country/Area* and *Series* and one quantitative independent variable is *year* that data was collected.**
+
+### Relevant summary statistics 
+
+**summary statistics for each the variables and appropriate visualizations**
+
+```{r}
+summary(original_file)
+```
+```{r}
+describe(original_file)
+```
+```{r}
+as_tibble(original_file)
+```
+
+## Tidying data for easy visualization
+Original data includes values for both regions and countries. I will create two subsets one for regions and one for Countries. In this way it will be easy for us to visualize data in a more organized manner. 
+
+```{r}
+# Deleting unwanted columns from the original file and save as a new data frame.
+UN_PopulationGrowth <-
+  select(original_file, -c("Region.Country.Area","Footnotes", "Source"))
+
+head(UN_PopulationGrowth)
+```
+```{r}
+Population_Region <- UN_PopulationGrowth %>%
+  slice(22:564)
+
+names(Population_Region)[names(Population_Region) == "X"] <- "Region"
+
+head(Population_Region)
+```
+```{r}
+by_Region <- Population_Region %>%
+  spread(key = Series, value = Value)
+
+names(by_Region)[names(by_Region) == "Infant mortality for both sexes (per 1,000 live births)"] <- "Infant_Mortality"
+names(by_Region)[names(by_Region) == "Life expectancy at birth for both sexes (years)"] <- "Life_Expectancy"
+names(by_Region)[names(by_Region) == "Maternal mortality ratio (deaths per 100,000 population)"] <- "Maternal_mortality_ratio"
+names(by_Region)[names(by_Region) == "Life expectancy at birth for males (years)"] <- "LifeExpectancy_males"
+names(by_Region)[names(by_Region) == "Life expectancy at birth for females (years)"] <- "LifeExpectancy_females"
+names(by_Region)[names(by_Region) == "Population annual rate of increase (percent)"] <- "Population_increase_rate"
+names(by_Region)[names(by_Region) == "Total fertility rate (children per women)"] <- "Total_fertility_rate"
+
+```
+
+```{r}
+head(by_Region)
+```
+
+## Data Visualization 
+
+
+```{r}
+# Infant mortality rate by region
+ggplot(by_Region, aes(x = Infant_Mortality, y = Region))+
+  geom_point()
+```
+
+```{r}
+# Life expectancy for both sexes by region
+ggplot(by_Region, aes(x = Life_Expectancy, y = Region))+
+  geom_point()
+```
+
+```{r}
+ggplot(by_Region, aes(x = Region, y = Life_Expectancy, fill = as.character(Year))) +
+  geom_bar(stat = "Identity", position = "dodge") +
+  geom_text(aes(label = paste0(round(by_Region$Life_Expectancy,0))), hjust=-0.5, color="black", position = position_dodge(1), size = 2)+
+  scale_fill_brewer(palette = "Paired") +
+  theme(axis.text.x=element_text(angle = 0, vjust = 1)) +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "bottom") +
+  ggtitle("Life Expectancy by Region") +
+  xlab("Regions") +  ylab ("Age in Years") + 
+  coord_flip()
+```
